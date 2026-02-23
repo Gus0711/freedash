@@ -90,14 +90,14 @@ async function apiFetch(path, options = {}) {
 async function main() {
   console.log(`Connecting to PocketBase at ${PB_URL}...`)
 
-  // Auth as admin
-  const auth = await apiFetch("/api/admins/auth-with-password", {
+  // Auth as superuser (PocketBase 0.25+)
+  const auth = await apiFetch("/api/collections/_superusers/auth-with-password", {
     method: "POST",
     body: JSON.stringify({ identity: email, password }),
   })
   const token = auth.token
   const authHeaders = { Authorization: `Bearer ${token}` }
-  console.log("Authenticated as admin.")
+  console.log("Authenticated as superuser.")
 
   // Create categories
   console.log("\n--- Categories ---")
