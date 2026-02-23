@@ -25,7 +25,7 @@ const collectionsSchema = [
   {
     name: "categories",
     type: "base",
-    schema: [
+    fields: [
       { name: "name",       type: "text", required: true, options: {} },
       { name: "slug",       type: "text", required: true, options: {} },
       { name: "icon",       type: "text", required: false, options: {} },
@@ -45,7 +45,7 @@ const collectionsSchema = [
   {
     name: "services",
     type: "base",
-    schema: [
+    fields: [
       { name: "name",            type: "text",     required: true,  options: {} },
       { name: "description",     type: "text",     required: false, options: {} },
       { name: "url_external",    type: "url",      required: false, options: {} },
@@ -68,7 +68,7 @@ const collectionsSchema = [
   {
     name: "settings",
     type: "base",
-    schema: [
+    fields: [
       { name: "site_title",           type: "text",   required: false, options: {} },
       { name: "weather_latitude",     type: "number", required: false, options: {} },
       { name: "weather_longitude",    type: "number", required: false, options: {} },
@@ -140,9 +140,10 @@ const settings = {
 
 // ─── Seed logic ──────────────────────────────────────────────
 async function apiFetch(path, options = {}) {
+  const { headers: optHeaders, ...restOptions } = options
   const res = await fetch(`${PB_URL}${path}`, {
-    headers: { "Content-Type": "application/json", ...options.headers },
-    ...options,
+    headers: { "Content-Type": "application/json", ...optHeaders },
+    ...restOptions,
   })
   if (!res.ok) {
     const body = await res.text()
@@ -193,16 +194,18 @@ async function main() {
   console.log("\n  Linking services.category -> categories...")
   try {
     const svcCol = await apiFetch(`/api/collections/services`, { headers: authHeaders })
-    const updatedSchema = svcCol.schema.map(f => {
+    // PB 0.25+ uses "fields" instead of "schema"
+    const fields = svcCol.fields || svcCol.schema || []
+    const updatedFields = fields.map(f => {
       if (f.name === "category") {
-        return { ...f, options: { ...f.options, collectionId: collectionIds["categories"], maxSelect: 1 } }
+        return { ...f, collectionId: collectionIds["categories"], maxSelect: 1 }
       }
       return f
     })
     await apiFetch(`/api/collections/services`, {
       method: "PATCH",
       headers: authHeaders,
-      body: JSON.stringify({ schema: updatedSchema }),
+      body: JSON.stringify({ fields: updatedFields }),
     })
     console.log("  + Relation linked.")
   } catch (e) {
