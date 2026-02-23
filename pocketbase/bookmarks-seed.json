@@ -1,0 +1,51 @@
+{
+  "folders": [
+    {
+      "name": "Google",
+      "icon": "mail",
+      "color": "#4285f4",
+      "sort_order": 10,
+      "bookmarks": [
+        { "name": "Gmail",          "url": "https://mail.google.com/",     "icon_slug": "gmail",           "sort_order": 10 },
+        { "name": "Drive",          "url": "https://drive.google.com/",    "icon_slug": "google-drive",    "sort_order": 20 },
+        { "name": "Calendar",       "url": "https://calendar.google.com/", "icon_slug": "google-calendar", "sort_order": 30 },
+        { "name": "Photos",         "url": "https://photos.google.com/",   "icon_slug": "google-photos",   "sort_order": 40 },
+        { "name": "Maps",           "url": "https://maps.google.com/",     "icon_slug": "google-maps",     "sort_order": 50 }
+      ]
+    },
+    {
+      "name": "Outils IA",
+      "icon": "brain",
+      "color": "#d97706",
+      "sort_order": 20,
+      "bookmarks": [
+        { "name": "Claude",  "url": "https://claude.ai/",          "icon_slug": "",  "sort_order": 10 },
+        { "name": "Gemini",  "url": "https://gemini.google.com/",  "icon_slug": "",  "sort_order": 20 }
+      ]
+    },
+    {
+      "name": "Dev",
+      "icon": "code",
+      "color": "#6366f1",
+      "sort_order": 30,
+      "bookmarks": [
+        { "name": "GitHub",          "url": "https://github.com/",                                  "icon_slug": "github",     "sort_order": 10 },
+        { "name": "Netdata",         "url": "https://app.netdata.cloud/",                           "icon_slug": "netdata",    "sort_order": 20 },
+        { "name": "Cloudflare",      "url": "https://dash.cloudflare.com/",                         "icon_slug": "cloudflare", "sort_order": 30 },
+        { "name": "SnippetVault",    "url": "https://snippetvault.datagtb.com/",                    "icon_slug": "",           "sort_order": 40 },
+        { "name": "Stack Overflow",  "url": "https://stackoverflow.com/",                           "icon_slug": "",           "sort_order": 50 },
+        { "name": "Json visualizer", "url": "https://jsonmaster.com/json-tools/visualizer",         "icon_slug": "",           "sort_order": 60 }
+      ]
+    },
+    {
+      "name": "Medias",
+      "icon": "play",
+      "color": "#ef4444",
+      "sort_order": 40,
+      "bookmarks": [
+        { "name": "YouTube", "url": "https://youtube.com/", "icon_slug": "youtube", "sort_order": 10 },
+        { "name": "Reddit",  "url": "https://reddit.com/",  "icon_slug": "reddit",  "sort_order": 20 }
+      ]
+    }
+  ]
+}

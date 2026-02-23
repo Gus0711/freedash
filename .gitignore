@@ -1,0 +1,39 @@
+# Dependencies
+frontend/node_modules/
+node_modules/
+
+# Build output
+frontend/dist/
+
+# PocketBase data (runtime state, not source)
+pocketbase/pb_data/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Vite
+frontend/.vite/
+
+# Docker volumes (if any local overrides)
+docker-compose.override.yml
