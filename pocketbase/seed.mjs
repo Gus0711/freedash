@@ -1,13 +1,15 @@
 /**
- * Freedash — PocketBase Seed Script
+ * Freedash — PocketBase Seed Script (PocketBase 0.25+)
  *
  * Usage:
  *   1. Start PocketBase: docker compose up pocketbase -d
- *   2. Create admin account at http://localhost:8090/_/
- *   3. Create the 3 collections (categories, services, settings) — see docs/seed-data.md
- *   4. Run: node pocketbase/seed.mjs <admin-email> <admin-password>
+ *   2. Create superuser: docker exec -it freedash-pb /app/pocketbase superuser create email password
+ *   3. Run: node pocketbase/seed.mjs <email> <password>
  *
- * This script will authenticate as admin and create all initial data.
+ * This script will:
+ *   - Authenticate as superuser
+ *   - Create the 3 collections (categories, services, settings)
+ *   - Insert all seed data (5 categories, 22 services, 1 settings row)
  */
 
 const PB_URL = process.env.PB_URL || "http://localhost:8090"
@@ -17,6 +19,70 @@ if (!email || !password) {
   console.error("Usage: node pocketbase/seed.mjs <admin-email> <admin-password>")
   process.exit(1)
 }
+
+// ─── Collection schemas ─────────────────────────────────────
+const collectionsSchema = [
+  {
+    name: "categories",
+    type: "base",
+    schema: [
+      { name: "name",       type: "text", required: true, options: {} },
+      { name: "slug",       type: "text", required: true, options: {} },
+      { name: "icon",       type: "text", required: false, options: {} },
+      { name: "color",      type: "text", required: false, options: {} },
+      { name: "sort_order", type: "number", required: true, options: {} },
+    ],
+    indexes: [
+      "CREATE UNIQUE INDEX idx_categories_name ON categories (name)",
+      "CREATE UNIQUE INDEX idx_categories_slug ON categories (slug)",
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: "@request.auth.id != ''",
+  },
+  {
+    name: "services",
+    type: "base",
+    schema: [
+      { name: "name",            type: "text",     required: true,  options: {} },
+      { name: "description",     type: "text",     required: false, options: {} },
+      { name: "url_external",    type: "url",      required: false, options: {} },
+      { name: "url_local",       type: "url",      required: false, options: {} },
+      { name: "icon_slug",       type: "text",     required: false, options: {} },
+      { name: "icon_fallback",   type: "text",     required: false, options: {} },
+      { name: "category",        type: "relation", required: true,  options: { collectionId: "", maxSelect: 1 } },
+      { name: "sort_order",      type: "number",   required: true,  options: {} },
+      { name: "is_favorite",     type: "bool",     required: false, options: {} },
+      { name: "is_active",       type: "bool",     required: false, options: {} },
+      { name: "open_in_new_tab", type: "bool",     required: false, options: {} },
+      { name: "notes",           type: "text",     required: false, options: {} },
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: "@request.auth.id != ''",
+  },
+  {
+    name: "settings",
+    type: "base",
+    schema: [
+      { name: "site_title",           type: "text",   required: false, options: {} },
+      { name: "weather_latitude",     type: "number", required: false, options: {} },
+      { name: "weather_longitude",    type: "number", required: false, options: {} },
+      { name: "weather_city",         type: "text",   required: false, options: {} },
+      { name: "theme",                type: "text",   required: false, options: {} },
+      { name: "sidebar_default_open", type: "bool",   required: false, options: {} },
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: "@request.auth.id != ''",
+  },
+]
 
 // ─── Categories ──────────────────────────────────────────────
 const categories = [
@@ -28,8 +94,6 @@ const categories = [
 ]
 
 // ─── Services (merged from Homepage distant + local tabs) ────
-// icon_slug = Dashboard Icons CDN slug (empty string if none)
-// icon_fallback = Lucide icon name for fallback
 const services = [
   // Infrastructure
   { name: "Proxmox",        description: "Hyperviseur principal",   icon_slug: "proxmox",       icon_fallback: "monitor",    url_external: "https://prox.datagtb.com",       url_local: "https://192.168.1.200:8006",  category_slug: "infrastructure", sort_order: 10, is_favorite: true  },
@@ -99,8 +163,54 @@ async function main() {
   const authHeaders = { Authorization: `Bearer ${token}` }
   console.log("Authenticated as superuser.")
 
-  // Create categories
-  console.log("\n--- Categories ---")
+  // ── Create collections ──────────────────────────────────
+  console.log("\n=== Creating collections ===")
+  const collectionIds = {}
+  for (const col of collectionsSchema) {
+    try {
+      const created = await apiFetch("/api/collections", {
+        method: "POST",
+        headers: authHeaders,
+        body: JSON.stringify(col),
+      })
+      collectionIds[col.name] = created.id
+      console.log(`  + Collection "${col.name}" (${created.id})`)
+    } catch (e) {
+      // Collection might already exist
+      if (e.message.includes("400")) {
+        console.log(`  ~ Collection "${col.name}" already exists, fetching ID...`)
+        const existing = await apiFetch(`/api/collections/${col.name}`, {
+          headers: authHeaders,
+        })
+        collectionIds[col.name] = existing.id
+      } else {
+        throw e
+      }
+    }
+  }
+
+  // Update services collection: set the category relation to point to categories collection
+  console.log("\n  Linking services.category -> categories...")
+  try {
+    const svcCol = await apiFetch(`/api/collections/services`, { headers: authHeaders })
+    const updatedSchema = svcCol.schema.map(f => {
+      if (f.name === "category") {
+        return { ...f, options: { ...f.options, collectionId: collectionIds["categories"], maxSelect: 1 } }
+      }
+      return f
+    })
+    await apiFetch(`/api/collections/services`, {
+      method: "PATCH",
+      headers: authHeaders,
+      body: JSON.stringify({ schema: updatedSchema }),
+    })
+    console.log("  + Relation linked.")
+  } catch (e) {
+    console.log(`  ~ Relation update: ${e.message}`)
+  }
+
+  // ── Create categories ───────────────────────────────────
+  console.log("\n=== Seeding categories ===")
   const catMap = new Map()
   for (const cat of categories) {
     try {
@@ -116,8 +226,8 @@ async function main() {
     }
   }
 
-  // Create services
-  console.log("\n--- Services ---")
+  // ── Create services ─────────────────────────────────────
+  console.log("\n=== Seeding services ===")
   for (const svc of services) {
     const catId = catMap.get(svc.category_slug)
     if (!catId) {
@@ -142,8 +252,8 @@ async function main() {
     }
   }
 
-  // Create settings
-  console.log("\n--- Settings ---")
+  // ── Create settings ─────────────────────────────────────
+  console.log("\n=== Seeding settings ===")
   try {
     const created = await apiFetch("/api/collections/settings/records", {
       method: "POST",
@@ -155,10 +265,11 @@ async function main() {
     console.log(`  ! Settings: ${e.message}`)
   }
 
-  console.log("\nSeed complete!")
-  console.log(`  Categories: ${categories.length}`)
-  console.log(`  Services:   ${services.length}`)
-  console.log(`  Favorites:  ${services.filter(s => s.is_favorite).length}`)
+  console.log("\n✓ Seed complete!")
+  console.log(`  Collections: 3`)
+  console.log(`  Categories:  ${categories.length}`)
+  console.log(`  Services:    ${services.length}`)
+  console.log(`  Favorites:   ${services.filter(s => s.is_favorite).length}`)
 }
 
 main().catch((e) => {
