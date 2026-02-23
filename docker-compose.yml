@@ -1,10 +1,10 @@
-version: "3.8"
-
 services:
   pocketbase:
     build: ./pocketbase
     container_name: freedash-pb
     restart: unless-stopped
+    ports:
+      - "8090:8090"
     volumes:
       - ./pocketbase/pb_data:/app/pb_data
     healthcheck:
