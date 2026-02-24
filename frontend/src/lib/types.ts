@@ -34,6 +34,9 @@ export interface Settings extends RecordModel {
   theme: string
   sidebar_default_open: boolean
   deezer_url: string
+  ha_url: string
+  ha_token: string
+  ha_player_entity_id: string
 }
 
 export interface BookmarkFolder extends RecordModel {

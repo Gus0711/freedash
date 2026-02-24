@@ -76,6 +76,9 @@ const collectionsSchema = [
       { name: "theme",                type: "text",   required: false, options: {} },
       { name: "sidebar_default_open", type: "bool",   required: false, options: {} },
       { name: "deezer_url",          type: "url",    required: false, options: {} },
+      { name: "ha_url",              type: "url",    required: false, options: {} },
+      { name: "ha_token",            type: "text",   required: false, options: {} },
+      { name: "ha_player_entity_id", type: "text",   required: false, options: {} },
     ],
     listRule: "",
     viewRule: "",
@@ -173,6 +176,9 @@ const settings = {
   theme: "dark",
   sidebar_default_open: false,
   deezer_url: "https://www.deezer.com/fr/playlist/53362031",
+  ha_url: "A_REMPLACER",
+  ha_token: "A_REMPLACER",
+  ha_player_entity_id: "media_player.ma_yhh8puhihy",
 }
 
 // ─── Bookmark Folders ────────────────────────────────────────

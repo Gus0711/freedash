@@ -27,7 +27,10 @@
       "Bash(git commit:*)",
       "Bash(npm run build:*)",
       "WebFetch(domain:open-meteo.com)",
-      "WebFetch(domain:widget.deezer.com)"
+      "WebFetch(domain:widget.deezer.com)",
+      "WebFetch(domain:www.music-assistant.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl:*)"
     ]
   }
 }
