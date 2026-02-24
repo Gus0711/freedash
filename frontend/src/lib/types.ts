@@ -33,6 +33,7 @@ export interface Settings extends RecordModel {
   weather_city: string
   theme: string
   sidebar_default_open: boolean
+  deezer_url: string
 }
 
 export interface BookmarkFolder extends RecordModel {

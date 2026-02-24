@@ -20,6 +20,7 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
     weather_city: "",
     theme: "dark",
     sidebar_default_open: true,
+    deezer_url: "",
   })
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
         weather_city: settings.weather_city,
         theme: settings.theme,
         sidebar_default_open: settings.sidebar_default_open,
+        deezer_url: settings.deezer_url,
       })
     }
   }, [settings])
@@ -101,6 +103,16 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
               value="dark"
               disabled
               className="text-zinc-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="set-deezer">URL Deezer (playlist, album, artiste)</Label>
+            <Input
+              id="set-deezer"
+              value={form.deezer_url ?? ""}
+              onChange={(e) => handleField("deezer_url", e.target.value)}
+              placeholder="https://www.deezer.com/fr/playlist/53362031"
             />
           </div>
 

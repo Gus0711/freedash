@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import ClockWidget from "@/components/dashboard/ClockWidget"
 import SearchBar from "@/components/dashboard/SearchBar"
 import WeatherWidget from "@/components/dashboard/WeatherWidget"
+import DeezerMiniPlayer from "@/components/dashboard/DeezerMiniPlayer"
 
 export default function Header() {
   return (
@@ -12,7 +13,10 @@ export default function Header() {
     >
       <ClockWidget />
       <SearchBar variant="header" />
-      <WeatherWidget />
+      <div className="flex items-center gap-3">
+        <WeatherWidget />
+        <DeezerMiniPlayer />
+      </div>
     </motion.header>
   )
 }

@@ -75,6 +75,7 @@ const collectionsSchema = [
       { name: "weather_city",         type: "text",   required: false, options: {} },
       { name: "theme",                type: "text",   required: false, options: {} },
       { name: "sidebar_default_open", type: "bool",   required: false, options: {} },
+      { name: "deezer_url",          type: "url",    required: false, options: {} },
     ],
     listRule: "",
     viewRule: "",
@@ -171,6 +172,7 @@ const settings = {
   weather_city: "Reims",
   theme: "dark",
   sidebar_default_open: false,
+  deezer_url: "https://www.deezer.com/fr/playlist/53362031",
 }
 
 // ─── Bookmark Folders ────────────────────────────────────────
