@@ -18,8 +18,8 @@ import SidebarItem from "./SidebarItem"
 import { Separator } from "@/components/ui/separator"
 
 const sidebarVariants = {
-  open: { width: 240, transition: { type: "spring", stiffness: 300, damping: 30 } },
-  closed: { width: 64, transition: { type: "spring", stiffness: 300, damping: 30 } },
+  open: { width: 240, transition: { type: "spring" as const, stiffness: 300, damping: 30 } },
+  closed: { width: 64, transition: { type: "spring" as const, stiffness: 300, damping: 30 } },
 }
 
 const mvpNav = [
