@@ -21,6 +21,9 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
     theme: "dark",
     sidebar_default_open: true,
     deezer_url: "",
+    ha_url: "",
+    ha_token: "",
+    ha_player_entity_id: "",
   })
 
   useEffect(() => {
@@ -33,6 +36,9 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
         theme: settings.theme,
         sidebar_default_open: settings.sidebar_default_open,
         deezer_url: settings.deezer_url,
+        ha_url: settings.ha_url,
+        ha_token: settings.ha_token,
+        ha_player_entity_id: settings.ha_player_entity_id,
       })
     }
   }, [settings])
@@ -113,6 +119,38 @@ export function SettingsForm({ settings, onSave }: SettingsFormProps) {
               value={form.deezer_url ?? ""}
               onChange={(e) => handleField("deezer_url", e.target.value)}
               placeholder="https://www.deezer.com/fr/playlist/53362031"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="set-ha-url">Home Assistant URL</Label>
+              <Input
+                id="set-ha-url"
+                value={form.ha_url ?? ""}
+                onChange={(e) => handleField("ha_url", e.target.value)}
+                placeholder="http://192.168.1.202:8123"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="set-ha-entity">Player Entity ID</Label>
+              <Input
+                id="set-ha-entity"
+                value={form.ha_player_entity_id ?? ""}
+                onChange={(e) => handleField("ha_player_entity_id", e.target.value)}
+                placeholder="media_player.ma_yhh8puhihy"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="set-ha-token">Token Home Assistant</Label>
+            <Input
+              id="set-ha-token"
+              type="password"
+              value={form.ha_token ?? ""}
+              onChange={(e) => handleField("ha_token", e.target.value)}
+              placeholder="eyJhbGciOiJIUzI1..."
             />
           </div>
 
