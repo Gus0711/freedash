@@ -184,38 +184,38 @@ body {
 .aurora-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(100px);
+  opacity: 0.25;
   will-change: transform;
 }
 
 .aurora-blob-1 {
-  width: 500px;
-  height: 400px;
+  width: 600px;
+  height: 500px;
   background: radial-gradient(circle, #3b82f6, transparent 70%);
   top: -10%;
   left: 10%;
   animation: aurora-1 20s ease-in-out infinite;
 }
 .aurora-blob-2 {
-  width: 450px;
-  height: 350px;
+  width: 550px;
+  height: 450px;
   background: radial-gradient(circle, #06b6d4, transparent 70%);
   top: 20%;
   right: 5%;
   animation: aurora-2 25s ease-in-out infinite;
 }
 .aurora-blob-3 {
-  width: 400px;
-  height: 450px;
+  width: 500px;
+  height: 550px;
   background: radial-gradient(circle, #8b5cf6, transparent 70%);
   bottom: 0%;
   left: 30%;
   animation: aurora-3 22s ease-in-out infinite;
 }
 .aurora-blob-4 {
-  width: 350px;
-  height: 300px;
+  width: 450px;
+  height: 400px;
   background: radial-gradient(circle, #6366f1, transparent 70%);
   top: 40%;
   left: -5%;
@@ -224,27 +224,45 @@ body {
 
 /* ─── Glass + Glow utilities ──────────────────────────────── */
 .glass-card {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  background: rgba(24, 24, 27, 0.50);
-  border-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(24, 24, 27, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+              0 4px 24px rgba(0, 0, 0, 0.25);
 }
 
 .glass-card-hover {
-  transition: border-color 0.2s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.4s ease, background 0.3s ease;
 }
 .glass-card-hover:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(24, 24, 27, 0.55);
+}
+
+/* ─── Glow border animation for hero clock ────────────────── */
+@keyframes glow-border {
+  0%, 100% { border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 0 30px rgba(99, 102, 241, 0.1); }
+  33% { border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 0 30px rgba(59, 130, 246, 0.1); }
+  66% { border-color: rgba(139, 92, 246, 0.3); box-shadow: 0 0 30px rgba(139, 92, 246, 0.1); }
+}
+
+.glass-clock {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(24, 24, 27, 0.40);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  animation: glow-border 8s ease-in-out infinite;
 }
 
 /* ─── Pulse ring for StatusBadge ──────────────────────────── */
 @keyframes pulse-ring {
   0% {
     transform: scale(1);
-    opacity: 0.6;
+    opacity: 0.5;
   }
   100% {
-    transform: scale(2.5);
+    transform: scale(3);
     opacity: 0;
   }
 }

@@ -3,7 +3,6 @@ import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import { Globe, Wifi, Star, ArrowRight } from "lucide-react"
 import { useServices } from "@/hooks/useServices"
-import SearchBar from "@/components/dashboard/SearchBar"
 import ServiceGrid from "@/components/dashboard/ServiceGrid"
 import QuickStats from "@/components/dashboard/QuickStats"
 import BookmarkChips from "@/components/dashboard/BookmarkChips"
@@ -58,18 +57,13 @@ export default function DashboardPage() {
       {/* Welcome + Clock */}
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-zinc-50">{greeting}</h1>
-        <div className="mx-auto mt-4 inline-block rounded-2xl border border-white/[0.06] bg-zinc-900/50 px-8 py-4 backdrop-blur-xl">
+        <div className="glass-clock mx-auto mt-4 inline-block rounded-2xl px-10 py-5">
           <p className="text-6xl font-bold tabular-nums text-zinc-50">
             {timeStr}
             <span className="text-3xl text-zinc-500">:{seconds}</span>
           </p>
         </div>
         <p className="mt-3 text-sm font-medium capitalize text-zinc-400">{dateStr}</p>
-      </div>
-
-      {/* Search */}
-      <div className="mx-auto mb-8 max-w-xl">
-        <SearchBar variant="header" />
       </div>
 
       {/* Quick Stats */}

@@ -33,7 +33,9 @@ export default function ServiceCard({ service, urlField }: ServiceCardProps) {
           className="glass-card glass-card-hover relative flex flex-row items-center gap-3 p-3"
           style={{
             borderLeft: `3px solid ${categoryColor}`,
-            boxShadow: hovered ? `0 0 20px ${categoryColor}33` : "none",
+            boxShadow: hovered
+              ? `0 0 30px ${categoryColor}40, 0 0 60px ${categoryColor}15`
+              : "none",
           }}
         >
           <StatusBadge url={targetUrl} />

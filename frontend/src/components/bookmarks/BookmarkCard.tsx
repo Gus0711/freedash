@@ -32,7 +32,9 @@ export default function BookmarkCard({ bookmark, folderColor }: BookmarkCardProp
           className="glass-card glass-card-hover flex flex-row items-center gap-3 p-3"
           style={{
             borderLeft: `3px solid ${folderColor}`,
-            boxShadow: hovered ? `0 0 20px ${folderColor}33` : "none",
+            boxShadow: hovered
+              ? `0 0 30px ${folderColor}40, 0 0 60px ${folderColor}15`
+              : "none",
           }}
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/[0.06]">

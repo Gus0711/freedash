@@ -372,7 +372,7 @@ async function main() {
     }
   }
 
-  // ── Create settings ─────────────────────────────────────
+  // ── Create or update settings ──────────────────────────────
   console.log("\n=== Seeding settings ===")
   try {
     const created = await apiFetch("/api/collections/settings/records", {
@@ -380,9 +380,25 @@ async function main() {
       headers: authHeaders,
       body: JSON.stringify(settings),
     })
-    console.log(`  + Settings (${created.id})`)
-  } catch (e) {
-    console.log(`  ! Settings: ${e.message}`)
+    console.log(`  + Settings created (${created.id})`)
+  } catch {
+    // Already exists — fetch and update
+    try {
+      const existing = await apiFetch("/api/collections/settings/records?perPage=1", {
+        headers: authHeaders,
+      })
+      if (existing.items?.length > 0) {
+        const id = existing.items[0].id
+        await apiFetch(`/api/collections/settings/records/${id}`, {
+          method: "PATCH",
+          headers: authHeaders,
+          body: JSON.stringify(settings),
+        })
+        console.log(`  ~ Settings updated (${id})`)
+      }
+    } catch (e2) {
+      console.log(`  ! Settings update failed: ${e2.message}`)
+    }
   }
 
   console.log("\n✓ Seed complete!")
