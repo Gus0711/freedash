@@ -1,11 +1,9 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Music } from "lucide-react"
 import { useSettings } from "@/hooks/useSettings"
 
 function toWidgetUrl(deezerUrl: string): string | null {
-  // Convert deezer.com URL to widget.deezer.com URL
-  // e.g. https://www.deezer.com/fr/playlist/53362031 → https://widget.deezer.com/widget/dark/playlist/53362031
   const match = deezerUrl.match(
     /deezer\.com\/(?:\w+\/)?(track|album|playlist|artist|podcast|episode)\/(\d+)/
   )
@@ -15,15 +13,30 @@ function toWidgetUrl(deezerUrl: string): string | null {
 }
 
 export default function DeezerMiniPlayer() {
-  const { settings } = useSettings()
+  const { settings, loading } = useSettings()
   const [open, setOpen] = useState(false)
+
+  // Debug — a retirer plus tard
+  useEffect(() => {
+    console.log("[DeezerMiniPlayer] settings:", settings)
+    console.log("[DeezerMiniPlayer] deezer_url:", settings?.deezer_url)
+  }, [settings])
 
   const widgetUrl = useMemo(
     () => (settings?.deezer_url ? toWidgetUrl(settings.deezer_url) : null),
     [settings?.deezer_url]
   )
 
-  if (!widgetUrl) return null
+  // Toujours afficher le bouton, meme si loading
+  if (loading) return null
+  if (!widgetUrl) {
+    // Debug: bouton rouge pour montrer que le composant est monte mais pas d'URL
+    return (
+      <div className="flex h-8 w-8 items-center justify-center rounded-md">
+        <Music className="h-4 w-4 text-red-500" />
+      </div>
+    )
+  }
 
   return (
     <div className="relative">
