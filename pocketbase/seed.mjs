@@ -167,7 +167,9 @@ async function main() {
   // ── Create collections ──────────────────────────────────
   console.log("\n=== Creating collections ===")
   const collectionIds = {}
-  for (const col of collectionsSchema) {
+
+  // Helper: create or fetch existing collection
+  async function createOrFetch(col) {
     try {
       const created = await apiFetch("/api/collections", {
         method: "POST",
@@ -177,40 +179,35 @@ async function main() {
       collectionIds[col.name] = created.id
       console.log(`  + Collection "${col.name}" (${created.id})`)
     } catch (e) {
-      // Collection might already exist
-      if (e.message.includes("400")) {
-        console.log(`  ~ Collection "${col.name}" already exists, fetching ID...`)
+      // Try fetching — if it exists, use it; otherwise rethrow
+      try {
         const existing = await apiFetch(`/api/collections/${col.name}`, {
           headers: authHeaders,
         })
         collectionIds[col.name] = existing.id
-      } else {
-        throw e
+        console.log(`  ~ Collection "${col.name}" already exists (${existing.id})`)
+      } catch {
+        throw new Error(`Failed to create "${col.name}": ${e.message}`)
       }
     }
   }
 
-  // Update services collection: set the category relation to point to categories collection
-  console.log("\n  Linking services.category -> categories...")
-  try {
-    const svcCol = await apiFetch(`/api/collections/services`, { headers: authHeaders })
-    // PB 0.25+ uses "fields" instead of "schema"
-    const fields = svcCol.fields || svcCol.schema || []
-    const updatedFields = fields.map(f => {
-      if (f.name === "category") {
-        return { ...f, collectionId: collectionIds["categories"], maxSelect: 1 }
-      }
-      return f
-    })
-    await apiFetch(`/api/collections/services`, {
-      method: "PATCH",
-      headers: authHeaders,
-      body: JSON.stringify({ fields: updatedFields }),
-    })
-    console.log("  + Relation linked.")
-  } catch (e) {
-    console.log(`  ~ Relation update: ${e.message}`)
+  // 1. Create categories + settings first (no dependencies)
+  for (const col of collectionsSchema.filter(c => c.name !== "services")) {
+    await createOrFetch(col)
   }
+
+  // 2. Create services with correct category relation collectionId
+  const svcSchema = collectionsSchema.find(c => c.name === "services")
+  const svcWithRelation = {
+    ...svcSchema,
+    fields: svcSchema.fields.map(f =>
+      f.name === "category"
+        ? { ...f, options: { collectionId: collectionIds["categories"], maxSelect: 1 } }
+        : f
+    ),
+  }
+  await createOrFetch(svcWithRelation)
 
   // ── Create categories ───────────────────────────────────
   console.log("\n=== Seeding categories ===")
