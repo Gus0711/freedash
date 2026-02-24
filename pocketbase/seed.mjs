@@ -240,7 +240,7 @@ async function main() {
   console.log("\n=== Creating collections ===")
   const collectionIds = {}
 
-  // Helper: create or fetch existing collection
+  // Helper: create or fetch+update existing collection (syncs schema)
   async function createOrFetch(col) {
     try {
       const created = await apiFetch("/api/collections", {
@@ -251,13 +251,27 @@ async function main() {
       collectionIds[col.name] = created.id
       console.log(`  + Collection "${col.name}" (${created.id})`)
     } catch (e) {
-      // Try fetching — if it exists, use it; otherwise rethrow
+      // Already exists — fetch and update schema to add missing fields
       try {
         const existing = await apiFetch(`/api/collections/${col.name}`, {
           headers: authHeaders,
         })
         collectionIds[col.name] = existing.id
-        console.log(`  ~ Collection "${col.name}" already exists (${existing.id})`)
+
+        // Merge fields: add any new fields from schema that don't exist yet
+        const existingFieldNames = new Set(existing.fields.map(f => f.name))
+        const newFields = (col.fields || []).filter(f => !existingFieldNames.has(f.name))
+        if (newFields.length > 0) {
+          const mergedFields = [...existing.fields, ...newFields]
+          await apiFetch(`/api/collections/${col.name}`, {
+            method: "PATCH",
+            headers: authHeaders,
+            body: JSON.stringify({ fields: mergedFields }),
+          })
+          console.log(`  ~ Collection "${col.name}" updated — added fields: ${newFields.map(f => f.name).join(", ")}`)
+        } else {
+          console.log(`  ~ Collection "${col.name}" already exists (${existing.id})`)
+        }
       } catch {
         throw new Error(`Failed to create "${col.name}": ${e.message}`)
       }
