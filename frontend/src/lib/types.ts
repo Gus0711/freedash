@@ -61,6 +61,12 @@ export interface WeatherData {
   weathercode: number
 }
 
+export interface HourlyForecast {
+  time: string
+  temperature: number
+  weathercode: number
+}
+
 export interface NavItem {
   path: string
   label: string
