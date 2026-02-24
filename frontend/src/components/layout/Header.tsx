@@ -8,7 +8,7 @@ export default function Header() {
     <motion.header
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-6"
+      className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] bg-zinc-950/60 px-6 backdrop-blur-xl"
     >
       <ClockWidget />
       <SearchBar variant="header" />

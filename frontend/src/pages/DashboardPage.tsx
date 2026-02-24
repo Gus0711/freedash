@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import { Globe, Wifi, Star, ArrowRight } from "lucide-react"
@@ -6,7 +6,6 @@ import { useServices } from "@/hooks/useServices"
 import SearchBar from "@/components/dashboard/SearchBar"
 import ServiceGrid from "@/components/dashboard/ServiceGrid"
 import QuickStats from "@/components/dashboard/QuickStats"
-import AuroraBackground from "@/components/dashboard/AuroraBackground"
 import BookmarkChips from "@/components/dashboard/BookmarkChips"
 import { Button } from "@/components/ui/button"
 
@@ -19,12 +18,21 @@ function useClock() {
   return now
 }
 
+function getGreeting(hour: number): string {
+  if (hour >= 6 && hour < 12) return "Bonjour"
+  if (hour >= 12 && hour < 18) return "Bon apres-midi"
+  if (hour >= 18 && hour < 22) return "Bonsoir"
+  return "Bonne nuit"
+}
+
 export default function DashboardPage() {
   const { services } = useServices()
   const now = useClock()
 
   const favorites = services.filter((s) => s.is_favorite)
   const activeCount = services.filter((s) => s.is_active).length
+
+  const greeting = useMemo(() => getGreeting(now.getHours()), [now.getHours()])
 
   const dateStr = now.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -46,18 +54,17 @@ export default function DashboardPage() {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.2 }}
-      className="relative"
     >
-      <AuroraBackground />
-
       {/* Welcome + Clock */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-zinc-50">Bonjour</h1>
-        <p className="mt-2 text-5xl font-bold tabular-nums text-zinc-50">
-          {timeStr}
-          <span className="text-2xl text-zinc-500">:{seconds}</span>
-        </p>
-        <p className="mt-1 text-sm capitalize text-zinc-400">{dateStr}</p>
+        <h1 className="text-3xl font-bold text-zinc-50">{greeting}</h1>
+        <div className="mx-auto mt-4 inline-block rounded-2xl border border-white/[0.06] bg-zinc-900/50 px-8 py-4 backdrop-blur-xl">
+          <p className="text-6xl font-bold tabular-nums text-zinc-50">
+            {timeStr}
+            <span className="text-3xl text-zinc-500">:{seconds}</span>
+          </p>
+        </div>
+        <p className="mt-3 text-sm font-medium capitalize text-zinc-400">{dateStr}</p>
       </div>
 
       {/* Search */}

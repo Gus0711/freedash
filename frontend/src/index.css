@@ -221,3 +221,30 @@ body {
   left: -5%;
   animation: aurora-4 18s ease-in-out infinite;
 }
+
+/* ─── Glass + Glow utilities ──────────────────────────────── */
+.glass-card {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(24, 24, 27, 0.50);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.glass-card-hover {
+  transition: border-color 0.2s ease, box-shadow 0.3s ease;
+}
+.glass-card-hover:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Pulse ring for StatusBadge ──────────────────────────── */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}

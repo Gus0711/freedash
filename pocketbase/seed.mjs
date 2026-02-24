@@ -166,9 +166,9 @@ const services = [
 // ─── Settings ────────────────────────────────────────────────
 const settings = {
   site_title: "Freedash",
-  weather_latitude: 48.8566,
-  weather_longitude: 2.3522,
-  weather_city: "Paris",
+  weather_latitude: 49.2583,
+  weather_longitude: 3.9842,
+  weather_city: "Reims",
   theme: "dark",
   sidebar_default_open: false,
 }

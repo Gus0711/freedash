@@ -13,22 +13,32 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service, urlField }: ServiceCardProps) {
   const [imgError, setImgError] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const targetUrl = service[urlField] || service.url_external || service.url_local
+  const categoryColor = service.expand?.category?.color ?? "#3b82f6"
 
   return (
     <motion.div
       whileHover={{ scale: 1.03 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <a
         href={targetUrl}
         target={service.open_in_new_tab ? "_blank" : "_self"}
         rel="noopener noreferrer"
       >
-        <Card className="relative flex flex-row items-center gap-3 border-zinc-800 bg-zinc-900 p-3 transition-colors hover:border-zinc-700">
+        <Card
+          className="glass-card glass-card-hover relative flex flex-row items-center gap-3 p-3"
+          style={{
+            borderLeft: `3px solid ${categoryColor}`,
+            boxShadow: hovered ? `0 0 20px ${categoryColor}33` : "none",
+          }}
+        >
           <StatusBadge url={targetUrl} />
 
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-zinc-800">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/[0.06]">
             {!imgError ? (
               <img
                 src={getDashboardIconUrl(service.icon_slug)}

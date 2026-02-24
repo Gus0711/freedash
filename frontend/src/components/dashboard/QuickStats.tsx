@@ -30,7 +30,7 @@ export default function QuickStats({ onlineCount, offlineCount }: QuickStatsProp
       className="grid grid-cols-1 gap-3 sm:grid-cols-3"
     >
       <motion.div variants={item}>
-        <Card className="border-zinc-800 bg-zinc-900 py-0">
+        <Card className="glass-card py-0">
           <CardContent className="flex items-center gap-3 py-4">
             <CheckCircle2 className="h-5 w-5 text-green-500" />
             <div className="flex flex-col">
@@ -42,7 +42,7 @@ export default function QuickStats({ onlineCount, offlineCount }: QuickStatsProp
       </motion.div>
 
       <motion.div variants={item}>
-        <Card className="border-zinc-800 bg-zinc-900 py-0">
+        <Card className="glass-card py-0">
           <CardContent className="flex items-center gap-3 py-4">
             <XCircle className="h-5 w-5 text-red-500" />
             <div className="flex flex-col">
@@ -54,7 +54,7 @@ export default function QuickStats({ onlineCount, offlineCount }: QuickStatsProp
       </motion.div>
 
       <motion.div variants={item}>
-        <Card className="border-zinc-800 bg-zinc-900 py-0">
+        <Card className="glass-card py-0">
           <CardContent className="flex items-center gap-3 py-4">
             <WeatherWidget />
           </CardContent>

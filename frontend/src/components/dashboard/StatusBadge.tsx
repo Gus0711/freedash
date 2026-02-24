@@ -17,8 +17,14 @@ export default function StatusBadge({ url }: StatusBadgeProps) {
 
   return (
     <span className="absolute right-2 top-2">
+      {status === "online" && (
+        <span
+          className="absolute inset-0 rounded-full bg-green-500"
+          style={{ animation: "pulse-ring 2s ease-out infinite" }}
+        />
+      )}
       <motion.span
-        className={cn("block h-2 w-2 rounded-full", colorMap[status])}
+        className={cn("relative block h-2 w-2 rounded-full", colorMap[status])}
         animate={
           status === "checking"
             ? { scale: [1, 1.4, 1], opacity: [1, 0.6, 1] }

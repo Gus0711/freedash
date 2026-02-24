@@ -12,6 +12,7 @@ interface BookmarkCardProps {
 
 export default function BookmarkCard({ bookmark, folderColor }: BookmarkCardProps) {
   const [imgError, setImgError] = useState(false)
+  const [hovered, setHovered] = useState(false)
 
   const iconSrc = bookmark.icon_url.startsWith("http")
     ? bookmark.icon_url
@@ -23,10 +24,18 @@ export default function BookmarkCard({ bookmark, folderColor }: BookmarkCardProp
     <motion.div
       whileHover={{ scale: 1.03 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
-        <Card className="flex flex-row items-center gap-3 border-zinc-800 bg-zinc-900 p-3 transition-colors hover:border-zinc-700">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-zinc-800">
+        <Card
+          className="glass-card glass-card-hover flex flex-row items-center gap-3 p-3"
+          style={{
+            borderLeft: `3px solid ${folderColor}`,
+            boxShadow: hovered ? `0 0 20px ${folderColor}33` : "none",
+          }}
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/[0.06]">
             {iconSrc && !imgError ? (
               <img
                 src={iconSrc}
@@ -36,7 +45,7 @@ export default function BookmarkCard({ bookmark, folderColor }: BookmarkCardProp
               />
             ) : bookmark.abbreviation ? (
               <span
-                className="text-xs font-bold text-white"
+                className="text-xs font-bold"
                 style={{ color: folderColor }}
               >
                 {bookmark.abbreviation}

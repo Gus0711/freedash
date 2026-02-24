@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(dir:*)",
+      "mcp__claude_ai_context7__resolve-library-id",
+      "mcp__claude_ai_context7__query-docs",
+      "WebSearch",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(ls \"C:\\\\Users\\\\augus\\\\Documents\\\\GitHub\\\\freedash\\\\frontend\\\\src\\\\hooks\"\" 2>nul || echo \"Directory does not exist yet \")",
+      "Bash(npx tsc:*)",
+      "Bash(wc:*)",
+      "Bash(ls \"C:\\\\Users\\\\augus\\\\Documents\\\\GitHub\\\\freedash\\\\frontend\\\\src\\\\pages\"\" 2>&1 || echo \"Directory does not exist \")",
+      "Bash(for f in C:/Users/augus/Documents/GitHub/freedash/frontend/src/pages/*.tsx)",
+      "Bash(done)",
+      "Bash(npx vite build:*)",
+      "Bash(ls:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: initial Freedash project — full MVP \\(Phases 1-6\\)\n\nComplete homelab dashboard with React 19, Vite 7, TypeScript strict,\nTailwind v4, shadcn/ui, Framer Motion, and PocketBase backend.\n\n- Docker Compose setup \\(PocketBase + Nginx multi-stage\\)\n- 9 pages \\(4 MVP + 4 placeholders + 404\\)\n- Collapsible sidebar, header with clock/search/weather\n- Service cards with Dashboard Icons CDN + Lucide fallback\n- Client-side status ping \\(online/offline/checking\\)\n- Admin CRUD for services, categories, and settings\n- Seed script with 22 real services from Homepage migration\n- Bookmarks data prepared for future /bookmarks page\n- Build: 208 Ko gzipped \\(target was < 500 Ko\\)\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: expose PocketBase port 8090 and remove obsolete version attribute\n\nPocketBase was only accessible internally between containers. Adding port\nmapping so the admin UI is reachable from the host for initial setup.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: update seed script for PocketBase 0.25+ superuser API\n\nThe admin auth endpoint changed from /api/admins/auth-with-password to\n/api/collections/_superusers/auth-with-password in PB 0.25.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: auto-create collections in seed script\n\nThe seed script now creates the 3 collections \\(categories, services,\nsettings\\) via the PocketBase API before inserting data. No manual\ncollection creation needed in the admin UI.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

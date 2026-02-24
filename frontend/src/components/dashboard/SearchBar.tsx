@@ -58,13 +58,13 @@ export default function SearchBar(props: SearchBarProps) {
         value={props.variant === "header" ? query : props.value}
         onChange={(e) => handleChange(e.target.value)}
         className={cn(
-          "h-9 w-full rounded-md border border-zinc-800 bg-zinc-900 pl-9 pr-3 text-sm text-zinc-50",
+          "h-9 w-full rounded-md border border-white/[0.06] bg-zinc-900/50 pl-9 pr-3 text-sm text-zinc-50 backdrop-blur-md",
           "placeholder:text-zinc-500 outline-none transition-colors",
-          "focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700"
+          "focus:border-white/[0.12] focus:ring-1 focus:ring-white/[0.06]"
         )}
       />
       {showDropdown && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-zinc-800 bg-zinc-900 p-1 shadow-lg">
+        <div className="absolute top-full z-50 mt-1 w-full rounded-md border border-white/[0.06] bg-zinc-900/70 p-1 shadow-lg backdrop-blur-xl">
           {results.length === 0 ? (
             <p className="px-3 py-2 text-xs text-zinc-500">Aucun resultat</p>
           ) : (
