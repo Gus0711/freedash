@@ -9,18 +9,18 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react"
-import { useHomeAssistant } from "@/hooks/useHomeAssistant"
+import { useMusicAssistant } from "@/hooks/useMusicAssistant"
 
 export default function MusicPlayer() {
-  const { player, isConfigured, play, pause, next, previous, setVolume } =
-    useHomeAssistant()
+  const { activePlayer, loading, play, pause, next, previous, setVolume } =
+    useMusicAssistant()
   const [open, setOpen] = useState(false)
 
-  if (!isConfigured) return null
+  if (loading) return null
 
-  const isPlaying = player?.state === "playing"
-  const attrs = player?.attributes
-  const volume = attrs?.volume_level ?? 0.5
+  const isPlaying = activePlayer?.state === "playing"
+  const media = activePlayer?.current_media
+  const volume = (activePlayer?.volume_level ?? 50) / 100
 
   return (
     <div className="relative">
@@ -47,11 +47,16 @@ export default function MusicPlayer() {
             transition={{ duration: 0.2 }}
             className="glass-card absolute right-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl p-4"
           >
+            {/* Player name */}
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-zinc-500">
+              {activePlayer?.display_name ?? "Music Assistant"}
+            </p>
+
             {/* Track info */}
             <div className="mb-3 flex items-center gap-3">
-              {attrs?.entity_picture ? (
+              {media?.image_url ? (
                 <img
-                  src={`/ha-api/../${attrs.entity_picture}`}
+                  src={media.image_url}
                   alt="cover"
                   className="h-12 w-12 shrink-0 rounded-lg object-cover"
                   onError={(e) => {
@@ -65,14 +70,14 @@ export default function MusicPlayer() {
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-zinc-50">
-                  {attrs?.media_title ?? "Aucune lecture"}
+                  {media?.title ?? "Aucune lecture"}
                 </p>
                 <p className="truncate text-xs text-zinc-400">
-                  {attrs?.media_artist ?? "—"}
+                  {media?.artist ?? "—"}
                 </p>
-                {attrs?.media_album_name && (
+                {media?.album && (
                   <p className="truncate text-[10px] text-zinc-500">
-                    {attrs.media_album_name}
+                    {media.album}
                   </p>
                 )}
               </div>
@@ -81,13 +86,13 @@ export default function MusicPlayer() {
             {/* Controls */}
             <div className="mb-3 flex items-center justify-center gap-4">
               <button
-                onClick={previous}
+                onClick={() => previous()}
                 className="rounded-full p-1.5 transition-colors hover:bg-white/[0.08]"
               >
                 <SkipBack className="h-4 w-4 text-zinc-300" />
               </button>
               <button
-                onClick={isPlaying ? pause : play}
+                onClick={() => (isPlaying ? pause() : play())}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.1] transition-colors hover:bg-white/[0.18]"
               >
                 {isPlaying ? (
@@ -97,7 +102,7 @@ export default function MusicPlayer() {
                 )}
               </button>
               <button
-                onClick={next}
+                onClick={() => next()}
                 className="rounded-full p-1.5 transition-colors hover:bg-white/[0.08]"
               >
                 <SkipForward className="h-4 w-4 text-zinc-300" />
