@@ -6,6 +6,8 @@ import { useServices } from "@/hooks/useServices"
 import SearchBar from "@/components/dashboard/SearchBar"
 import ServiceGrid from "@/components/dashboard/ServiceGrid"
 import QuickStats from "@/components/dashboard/QuickStats"
+import AuroraBackground from "@/components/dashboard/AuroraBackground"
+import BookmarkChips from "@/components/dashboard/BookmarkChips"
 import { Button } from "@/components/ui/button"
 
 function useClock() {
@@ -44,7 +46,10 @@ export default function DashboardPage() {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.2 }}
+      className="relative"
     >
+      <AuroraBackground />
+
       {/* Welcome + Clock */}
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-zinc-50">Bonjour</h1>
@@ -75,6 +80,11 @@ export default function DashboardPage() {
           <ServiceGrid services={favorites} urlField="url_external" />
         </section>
       )}
+
+      {/* Bookmarks */}
+      <section className="mb-8">
+        <BookmarkChips />
+      </section>
 
       {/* Quick Links */}
       <section>
