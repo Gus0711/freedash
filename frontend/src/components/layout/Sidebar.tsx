@@ -26,12 +26,12 @@ const mvpNav = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/distant", label: "Distant", icon: Globe },
   { path: "/local", label: "Local", icon: Wifi },
+  { path: "/bookmarks", label: "Bookmarks", icon: Bookmark },
 ]
 
 const futureNav = [
   { path: "/stats", label: "Stats", icon: BarChart3 },
   { path: "/domotique", label: "Domotique", icon: Thermometer },
-  { path: "/bookmarks", label: "Bookmarks", icon: Bookmark },
   { path: "/logs", label: "Logs", icon: Activity },
 ]
 

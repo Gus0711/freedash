@@ -8,8 +8,8 @@
  *
  * This script will:
  *   - Authenticate as superuser
- *   - Create the 3 collections (categories, services, settings)
- *   - Insert all seed data (5 categories, 22 services, 1 settings row)
+ *   - Create the 5 collections (categories, services, settings, bookmark_folders, bookmarks)
+ *   - Insert all seed data (5 categories, 22 services, 1 settings row, 4 folders, 16 bookmarks)
  */
 
 const PB_URL = process.env.PB_URL || "http://localhost:8090"
@@ -82,6 +82,41 @@ const collectionsSchema = [
     updateRule: "@request.auth.id != ''",
     deleteRule: "@request.auth.id != ''",
   },
+  {
+    name: "bookmark_folders",
+    type: "base",
+    fields: [
+      { name: "name",       type: "text",   required: true,  options: {} },
+      { name: "icon",       type: "text",   required: false, options: {} },
+      { name: "color",      type: "text",   required: false, options: {} },
+      { name: "sort_order", type: "number", required: true,  options: {} },
+    ],
+    indexes: [
+      "CREATE UNIQUE INDEX idx_bookmark_folders_name ON bookmark_folders (name)",
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: "@request.auth.id != ''",
+  },
+  {
+    name: "bookmarks",
+    type: "base",
+    fields: [
+      { name: "name",         type: "text",     required: true,  options: {} },
+      { name: "url",          type: "url",      required: true,  options: {} },
+      { name: "icon_url",     type: "text",     required: false, options: {} },
+      { name: "abbreviation", type: "text",     required: false, options: {} },
+      { name: "folder",       type: "relation", required: true,  collectionId: "", maxSelect: 1 },
+      { name: "sort_order",   type: "number",   required: true,  options: {} },
+    ],
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: "@request.auth.id != ''",
+  },
 ]
 
 // ─── Categories ──────────────────────────────────────────────
@@ -138,6 +173,41 @@ const settings = {
   sidebar_default_open: false,
 }
 
+// ─── Bookmark Folders ────────────────────────────────────────
+const bookmarkFolders = [
+  { name: "Google",    icon: "globe",    color: "#4285f4", sort_order: 10 },
+  { name: "Outils IA", icon: "sparkles", color: "#8b5cf6", sort_order: 20 },
+  { name: "Dev",       icon: "code",     color: "#22c55e", sort_order: 30 },
+  { name: "Medias",    icon: "play",     color: "#ef4444", sort_order: 40 },
+]
+
+// ─── Bookmarks ───────────────────────────────────────────────
+const bookmarks = [
+  // Google
+  { name: "Gmail",          url: "https://mail.google.com",       icon_url: "gmail",       abbreviation: "GM", folder_name: "Google",    sort_order: 10 },
+  { name: "Google Drive",   url: "https://drive.google.com",      icon_url: "google-drive", abbreviation: "GD", folder_name: "Google",    sort_order: 20 },
+  { name: "Google Calendar", url: "https://calendar.google.com",  icon_url: "google-calendar", abbreviation: "GC", folder_name: "Google", sort_order: 30 },
+  { name: "YouTube",        url: "https://www.youtube.com",       icon_url: "youtube",     abbreviation: "YT", folder_name: "Google",    sort_order: 40 },
+
+  // Outils IA
+  { name: "ChatGPT",    url: "https://chat.openai.com",     icon_url: "chatgpt",     abbreviation: "GP", folder_name: "Outils IA", sort_order: 10 },
+  { name: "Claude",     url: "https://claude.ai",           icon_url: "https://www.anthropic.com/favicon.ico", abbreviation: "CL", folder_name: "Outils IA", sort_order: 20 },
+  { name: "Perplexity", url: "https://www.perplexity.ai",   icon_url: "perplexity",  abbreviation: "PX", folder_name: "Outils IA", sort_order: 30 },
+  { name: "Midjourney", url: "https://www.midjourney.com",  icon_url: "midjourney",  abbreviation: "MJ", folder_name: "Outils IA", sort_order: 40 },
+
+  // Dev
+  { name: "GitHub",       url: "https://github.com",            icon_url: "github",      abbreviation: "GH", folder_name: "Dev", sort_order: 10 },
+  { name: "Stack Overflow", url: "https://stackoverflow.com",   icon_url: "stackoverflow", abbreviation: "SO", folder_name: "Dev", sort_order: 20 },
+  { name: "NPM",          url: "https://www.npmjs.com",         icon_url: "npm",         abbreviation: "NP", folder_name: "Dev", sort_order: 30 },
+  { name: "MDN",          url: "https://developer.mozilla.org", icon_url: "https://developer.mozilla.org/favicon-48x48.png", abbreviation: "MD", folder_name: "Dev", sort_order: 40 },
+
+  // Medias
+  { name: "Reddit",    url: "https://www.reddit.com",       icon_url: "reddit",   abbreviation: "RD", folder_name: "Medias", sort_order: 10 },
+  { name: "Twitch",    url: "https://www.twitch.tv",        icon_url: "twitch",   abbreviation: "TW", folder_name: "Medias", sort_order: 20 },
+  { name: "Spotify",   url: "https://open.spotify.com",     icon_url: "spotify",  abbreviation: "SP", folder_name: "Medias", sort_order: 30 },
+  { name: "Twitter/X", url: "https://x.com",                icon_url: "twitter",  abbreviation: "TX", folder_name: "Medias", sort_order: 40 },
+]
+
 // ─── Seed logic ──────────────────────────────────────────────
 async function apiFetch(path, options = {}) {
   const { headers: optHeaders, ...restOptions } = options
@@ -192,8 +262,8 @@ async function main() {
     }
   }
 
-  // 1. Create categories + settings first (no dependencies)
-  for (const col of collectionsSchema.filter(c => c.name !== "services")) {
+  // 1. Create collections without relations first (categories, settings, bookmark_folders)
+  for (const col of collectionsSchema.filter(c => c.name !== "services" && c.name !== "bookmarks")) {
     await createOrFetch(col)
   }
 
@@ -208,6 +278,18 @@ async function main() {
     ),
   }
   await createOrFetch(svcWithRelation)
+
+  // 3. Create bookmarks with correct folder relation collectionId
+  const bmkSchema = collectionsSchema.find(c => c.name === "bookmarks")
+  const bmkWithRelation = {
+    ...bmkSchema,
+    fields: bmkSchema.fields.map(f =>
+      f.name === "folder"
+        ? { ...f, collectionId: collectionIds["bookmark_folders"], maxSelect: 1 }
+        : f
+    ),
+  }
+  await createOrFetch(bmkWithRelation)
 
   // ── Create categories ───────────────────────────────────
   console.log("\n=== Seeding categories ===")
@@ -252,6 +334,44 @@ async function main() {
     }
   }
 
+  // ── Create bookmark folders ─────────────────────────────
+  console.log("\n=== Seeding bookmark folders ===")
+  const folderMap = new Map()
+  for (const folder of bookmarkFolders) {
+    try {
+      const created = await apiFetch("/api/collections/bookmark_folders/records", {
+        method: "POST",
+        headers: authHeaders,
+        body: JSON.stringify(folder),
+      })
+      folderMap.set(folder.name, created.id)
+      console.log(`  + ${folder.name} (${created.id})`)
+    } catch (e) {
+      console.log(`  ! ${folder.name}: ${e.message}`)
+    }
+  }
+
+  // ── Create bookmarks ──────────────────────────────────
+  console.log("\n=== Seeding bookmarks ===")
+  for (const bmk of bookmarks) {
+    const folderId = folderMap.get(bmk.folder_name)
+    if (!folderId) {
+      console.log(`  ! ${bmk.name}: folder "${bmk.folder_name}" not found, skipping`)
+      continue
+    }
+    const { folder_name, ...data } = bmk
+    try {
+      const created = await apiFetch("/api/collections/bookmarks/records", {
+        method: "POST",
+        headers: authHeaders,
+        body: JSON.stringify({ ...data, folder: folderId }),
+      })
+      console.log(`  + ${bmk.name} (${created.id})`)
+    } catch (e) {
+      console.log(`  ! ${bmk.name}: ${e.message}`)
+    }
+  }
+
   // ── Create settings ─────────────────────────────────────
   console.log("\n=== Seeding settings ===")
   try {
@@ -266,10 +386,12 @@ async function main() {
   }
 
   console.log("\n✓ Seed complete!")
-  console.log(`  Collections: 3`)
-  console.log(`  Categories:  ${categories.length}`)
-  console.log(`  Services:    ${services.length}`)
-  console.log(`  Favorites:   ${services.filter(s => s.is_favorite).length}`)
+  console.log(`  Collections:      5`)
+  console.log(`  Categories:       ${categories.length}`)
+  console.log(`  Services:         ${services.length}`)
+  console.log(`  Favorites:        ${services.filter(s => s.is_favorite).length}`)
+  console.log(`  Bookmark folders: ${bookmarkFolders.length}`)
+  console.log(`  Bookmarks:        ${bookmarks.length}`)
 }
 
 main().catch((e) => {

@@ -35,6 +35,23 @@ export interface Settings extends RecordModel {
   sidebar_default_open: boolean
 }
 
+export interface BookmarkFolder extends RecordModel {
+  name: string
+  icon: string
+  color: string
+  sort_order: number
+}
+
+export interface Bookmark extends RecordModel {
+  name: string
+  url: string
+  icon_url: string
+  abbreviation: string
+  folder: string
+  sort_order: number
+  expand?: { folder?: BookmarkFolder }
+}
+
 export type ServiceStatus = "online" | "offline" | "checking"
 
 export type UrlField = "url_external" | "url_local"
