@@ -52,7 +52,7 @@ const collectionsSchema = [
       { name: "url_local",       type: "url",      required: false, options: {} },
       { name: "icon_slug",       type: "text",     required: false, options: {} },
       { name: "icon_fallback",   type: "text",     required: false, options: {} },
-      { name: "category",        type: "relation", required: true,  options: { collectionId: "", maxSelect: 1 } },
+      { name: "category",        type: "relation", required: true,  collectionId: "", maxSelect: 1 },
       { name: "sort_order",      type: "number",   required: true,  options: {} },
       { name: "is_favorite",     type: "bool",     required: false, options: {} },
       { name: "is_active",       type: "bool",     required: false, options: {} },
@@ -203,7 +203,7 @@ async function main() {
     ...svcSchema,
     fields: svcSchema.fields.map(f =>
       f.name === "category"
-        ? { ...f, options: { collectionId: collectionIds["categories"], maxSelect: 1 } }
+        ? { ...f, collectionId: collectionIds["categories"], maxSelect: 1 }
         : f
     ),
   }
